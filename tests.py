@@ -115,27 +115,6 @@ class TestRoute(TestCase):
 
 class TestGraph(TestCase):
     def setUp(self):
-        self.alphabet = "ABCDEFG"
-
-        def choose(seq, size):
-            out = [choice(seq)]
-            item = None
-            for i in range(size - 1):
-                while item in out or not item:
-                    item = choice(seq)
-                out.append(item)
-            return tuple(out)
-
-        def rand_vert_names():
-            return choose(self.alphabet, 2)
-
-        def rand_edge_str():
-            return ''.join([*rand_vert_names(), choice(digits)])
-
-        def rand_graph_str(vertex_count):
-            return ','.join(rand_edge_str() for _ in range(vertex_count))
-
-        self.rand_graph = Graph(rand_graph_str(10))
         self.graph = Graph('AB5,BC4,CD8,DC8,DE6,AD5,CE2,EB3,AE7')
 
     def test_pathfinding(self):
