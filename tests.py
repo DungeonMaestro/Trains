@@ -1,6 +1,3 @@
-from copy import copy
-from string import digits
-from random import choice, shuffle
 from unittest import TestCase
 
 from edge import Edge

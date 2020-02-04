@@ -1,4 +1,5 @@
 class Edge:
+    """An edge associates the names of two nodes with a magnitude"""
     __slots__ = ['start_vertex', 'end_vertex', 'magnitude']
 
     def __init__(self, **kwargs):

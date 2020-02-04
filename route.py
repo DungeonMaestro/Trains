@@ -32,10 +32,7 @@ class Route():
         """returns the total magnitude of the route"""
         return sum(link.magnitude for link in self.links)
 
-    @property
-    def shorthand(self):
-        return ''.join([edge.start_vertex for edge in self.links] + [self.end_vertex])
-
+    # Comparison overloads for sorting
     def __gt__(self, other):
         return self.magnitude > other.magnitude
 

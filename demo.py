@@ -9,6 +9,7 @@ from tests import TestGraph
 
 
 def randgraph():
+	"""Builds a random graph for playing around"""
 	alphabet = "ABCDEFG"
 
 	def choose(seq, size):
