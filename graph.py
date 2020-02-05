@@ -18,7 +18,7 @@ class Graph:
 		self.vertices = {['starts', 'ends'][i]: list(zip(*map(lambda e: e.vertices, self.edges)))[i] for i in range(2)}
 
 	def find_edges(self, **kwargs):
-		"""finds the subset of the links whose attributes satisfy the passed kwargs"""
+		"""finds the subset of the edges whose attributes satisfy the passed kwargs"""
 		return [edge for edge in self.edges if all(getattr(edge, key) == value for key, value in kwargs.items())]
 
 	@property
@@ -94,7 +94,7 @@ class Graph:
 					self.curr_path.pop()
 
 			def contiguous_edges(self):
-				"""gets the valid links that branch from the current node"""
+				"""gets the valid edges that branch from the current node"""
 				return set(sorted([edge for edge in self.graph.edges if edge.start_vertex == self.curr_vertex], reverse=True))
 
 		def traverse_graph(state):
@@ -173,7 +173,7 @@ class Graph:
 					self.curr_path.pop()
 
 			def contiguous_edges(self):
-				"""gets the valid links that branch from the current node"""
+				"""gets the valid edges that branch from the current node"""
 				return set(sorted(edge for edge in self.graph.edges if edge.start_vertex == self.curr_vertex))
 
 			@property
