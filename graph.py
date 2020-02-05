@@ -95,7 +95,7 @@ class Graph:
 
 			def contiguous_edges(self):
 				"""gets the valid links that branch from the current node"""
-				return {edge for edge in self.graph.edges if edge.start_vertex == self.curr_vertex}
+				return set(sorted([edge for edge in self.graph.edges if edge.start_vertex == self.curr_vertex], reverse=True))
 
 		def traverse_graph(state):
 			"""The recursive method that traverses the tree, recording and solutions"""
@@ -174,40 +174,50 @@ class Graph:
 
 			def contiguous_edges(self):
 				"""gets the valid links that branch from the current node"""
-				return {edge for edge in self.graph.edges if edge.start_vertex == self.curr_vertex}
+				return set(sorted(edge for edge in self.graph.edges if edge.start_vertex == self.curr_vertex))
 
 			@property
-			def is_path(self):
+			def is_solved(self):
 				"""returns whether or not a correct path is found"""
 				return self.curr_path and self.curr_path[-1].end_vertex == to_v
 
+			def reset_path(self):
+				self.curr_path = []
+
 		def traverse_graph(state):
-			"""The recursive method that traverses the tree, returning when a solution is found"""
+			"""This method increments the resolution control variable, then calls a recursive traversal method"""
 
-			# increments the method resolution
-			for state.resolution in range(state.resolution, state.escape):
+			def traverse_level(state):
+				"""This method is the recursive traversal method that searches the graph for solutions"""
 
-				# if a solution is recorded
-				if state.is_path:
+				# if the path is a solution and there is no documented solution, record it and exit
+				if state.is_solved and not state.solution:
 					state.solution = Route(*state.curr_path)
-					break
 				else:
+					# resets the path so the method behaves in a uniform manner
 
 					# get a set of potential edges to follow and iterate over that set
 					potential_edges = state.contiguous_edges()
 					for edge in potential_edges:
 						# if stepping forward from here would exceed the resolution, or if the resolution has already
 						# been exceeded, move to the next potential edge instead of going deeper
-						if state.depth() >= state.resolution:
-							continue
 
-						elif state.depth() + edge.magnitude < state.resolution:
+						if state.depth() + edge.magnitude <= state.resolution:
 							state.traverse_through(edge)
-							traverse_graph(state)
+							traverse_level(state)
 							# if a solution is found, bubble the recursion up instead of proceeding
-							if state.solution:
+							if state.is_solved:
 								return state
 							state.traverse_back()
+						else:
+							continue
+				return state
+
+			# Here's where the method action starts
+			for state.resolution in range(state.depth(), state.escape):
+				traverse_level(state)
+				if state.solution:
+					return state
 			return state
 
 		if to_v not in self.vertices['ends']:
