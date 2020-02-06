@@ -25,11 +25,12 @@ class Graph:
 	def M(self):
 		"""
 		M is a common notation for an arbitrary large number to be used as an upper bound for optimization problems
-		I defined it as the product of the magnitude of the longest edge and the number of non-replacing permutations of
+		I defined it as the product of the magnitude of the longest edge, and the number of non-replacing permutations of
 		the edges of the graph. A graph's big-M must at most be equal to this value if the lowest upper bound is finite*
 
 		*proof left as an exercise to the reader
 		"""
+
 		def longest_edge():
 			"""returns the magnitude of the longest edge"""
 			return max(self.edges).magnitude
@@ -46,7 +47,7 @@ class Graph:
 		given then an exception is thrown
 
 		The path is found by using a depth-first traversal: iterating through a list of connected edges, and for each
-		edge iterating through a sublist of connected edges, etc recursively, using the state subobject to persist
+		edge iterating through a sublist of connected edges, etc recursively, using the state sub-object to persist
 		the progress of the algorithm
 		"""
 
@@ -59,10 +60,10 @@ class Graph:
 				state.max_dist = max_dist or self.M
 				state.max_stops = max_stops or self.M
 				state.dist_escape = (lambda: state.curr_dist > state.max_dist)
-				state.valid_dist = (
+				state.is_valid_dist = (
 						lambda: state.curr_dist == state.max_dist) if max_dist and exact else lambda: not state.dist_escape()
 				state.stops_escape = (lambda: state.curr_stops > state.max_stops)
-				state.valid_stops = (
+				state.is_valid_stops = (
 						lambda: state.curr_stops == state.max_stops) if max_stops and exact else lambda: not state.stops_escape()
 				state.curr_path = []
 				state.solutions = []
@@ -94,8 +95,10 @@ class Graph:
 					self.curr_path.pop()
 
 			def contiguous_edges(self):
-				"""gets the valid edges that branch from the current node"""
-				return set(sorted([edge for edge in self.graph.edges if edge.start_vertex == self.curr_vertex], reverse=True))
+				"""gets the valid edges that branch from the current node, and sorts them in order of ascending
+				magnitude for efficiency"""
+				return set(
+					sorted([edge for edge in self.graph.edges if edge.start_vertex == self.curr_vertex], reverse=True))
 
 		def traverse_graph(state):
 			"""The recursive method that traverses the tree, recording and solutions"""
@@ -106,10 +109,11 @@ class Graph:
 
 			# if the endpoint is reached and everything is valid, a solution is found
 			if \
-					state.curr_path and \
-							state.curr_path[-1].end_vertex == to_v and \
-							state.valid_stops() and \
-							state.valid_dist():
+				state.curr_path and \
+				state.curr_path[-1].end_vertex == to_v and \
+				state.valid_stops() and \
+				state.valid_dist():
+
 				state.solutions.append(Route(*state.curr_path))
 
 			# get a set of potential edges to follow and iterate over that set
@@ -140,7 +144,7 @@ class Graph:
 		is 1, etc, until it finds a valid path from A to B that is no larger than the assumption.
 
 		The path is found by using a depth-first traversal: iterating through a list of connected edges, and for each
-		edge iterating through a sublist of connected edges, etc recursively, using the state subobject to persist
+		edge iterating through a sublist of connected edges, etc recursively, using the state sub-object to persist
 		the progress of the algorithm"""
 
 		class State:
@@ -178,7 +182,7 @@ class Graph:
 
 			@property
 			def is_solved(self):
-				"""returns whether or not a correct path is found"""
+				"""returns whether a correct path is found"""
 				return self.curr_path and self.curr_path[-1].end_vertex == to_v
 
 			def reset_path(self):
@@ -194,8 +198,6 @@ class Graph:
 				if state.is_solved and not state.solution:
 					state.solution = Route(*state.curr_path)
 				else:
-					# resets the path so the method behaves in a uniform manner
-
 					# get a set of potential edges to follow and iterate over that set
 					potential_edges = state.contiguous_edges()
 					for edge in potential_edges:
