@@ -1,5 +1,5 @@
-from random import choice
-from string import digits
+from random import choice, randint
+from string import digits, ascii_uppercase
 
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -8,9 +8,9 @@ from graph import Graph
 from tests import TestGraph
 
 
-def randgraph():
+def randgraph(edges, nodes=None):
 	"""Builds a random graph for playing around"""
-	alphabet = "ABCDEFG"
+	alphabet = ascii_uppercase[:nodes]
 
 	def choose(seq, size):
 		out = [choice(seq)]
@@ -30,12 +30,12 @@ def randgraph():
 	def rand_graph_str(vertex_count):
 		return ','.join(rand_edge_str() for _ in range(vertex_count))
 
-	return Graph(rand_graph_str(10))
+	return Graph(rand_graph_str(edges))
 
 
 t = TestGraph()
 t.setUp()
-r = randgraph()
+r = randgraph(12, 6)
 g = t.graph
 
 edges = {
