@@ -1,3 +1,4 @@
+from os.path import exists
 from random import choice, randint
 from string import digits, ascii_uppercase
 
@@ -50,7 +51,8 @@ R.add_weighted_edges_from(edges['r'])
 G.add_weighted_edges_from(edges['g'])
 
 nx.draw_networkx(G)
-plt.savefig("graphs/G.png")
+if exists('graphs/G.png'):
+	plt.savefig("graphs/G.png")
 plt.show()
 plt.cla()
 nx.draw_networkx(R)
